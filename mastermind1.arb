@@ -1,0 +1,155 @@
+class Game
+    attr_accessor :name, :list, :secret, :colors, :total_list
+
+    def initialize(name)
+        @name = name
+        @total_list = []
+        @list = ["_", "_", "_", "_"]
+        @secret = ["_", "_", "_", "_"]
+        @colors = ["red", "orange", "yellow", "green", "blue", "purple"]
+    end
+
+    def set_list_to_default
+        @list =  ["_", "_", "_", "_"]
+    end
+
+    def set_total_list_to_default
+        @total_list = []
+    end
+
+    def user_guess 
+        puts "guess the secret code! (e.g. 'red, orange, blue, red'): "
+        guess = gets.chomp.downcase
+        guess_splited = guess.split(',')
+        return guess_splited
+    end
+
+    def update_list(guess_splited)
+        @list = [guess_splited[0].strip, guess_splited[1].strip, guess_splited[2].strip, guess_splited[3].strip]
+        p "update_list"
+        p list
+    end
+
+    def append_list
+        total_list.append(list)
+    end
+
+    def print_total_list
+        p "print_total_list"
+        total_list.each do |list|
+            p list
+            puts 
+        end
+    end
+
+    def decide_secret
+        first = rand(6)
+        second = rand(6)
+        third = rand(6)
+        fourth = rand(6)
+        @secret = [colors[first], colors[second], colors[third], colors[fourth]]
+        p "secret code:"
+        p @secret
+    end
+
+    def correct_guess?
+        if @list == @secret
+            return true 
+        else
+            return false
+        end
+    end
+
+    def how_many_red_pegs
+        counter = 0 
+        for i in (0..3)
+            if list[i] == secret[i]
+                counter += 1
+            end
+        end
+        p counter
+        return counter
+    end
+
+    def list_sorted
+        #Use Hash.new to count by iteration how many each element in the list is in the secret (e.g. "red" => 1, "yellow"=> 2)
+        #look at phone screenshot. Add all the key values(numbers) then subtract it by number of red pegs to get the number
+        #of white pegs
+        list_sorted = list.reduce(Hash.new(0))do |result, color|
+            result[color] += 1
+            result
+        end
+        p "list_sorted"
+        p list_sorted
+    end
+
+    def secret_sorted
+        secret_sorted = secret.reduce(Hash.new(0))do |result, color|
+            result[color] += 1
+            result
+        end
+        p "secret_sorted"
+        p secret_sorted
+    end
+        
+    def how_many_white_pegs
+        #In case the key is the same but values are not
+        preliminary = secret_sorted.select {|key, value| list_sorted[key] > 0 && list_sorted[key] < value}
+        secret_sorted_copy = secret_sorted.clone
+        # p "preliminary"
+        # p preliminary
+        if preliminary.size > 0
+            preliminary.each do |key, value|
+                secret_sorted_copy[key] = list_sorted[key]
+            end
+        end
+        matches = secret_sorted_copy.select {|key, value| list_sorted[key] == value || list_sorted[key] > value} 
+        # p "matches"
+        # p matches
+        overlap = matches.reduce(0) do |sum, element|
+            sum + element[1]
+        end
+        # p "overlap"
+        # p overlap
+        white_pegs = overlap - self.how_many_red_pegs
+        p "white pegs = overlap - red pegs"
+        p white_pegs
+        return white_pegs
+    end
+end
+
+puts "-----MASTERMIND THE GAME-----"
+win = false
+newgame = Game.new("newgame")
+newgame.decide_secret
+p newgame.secret_sorted
+(1..12).each do |i|
+    p newgame.total_list
+    puts "Guess #{i}"
+    newgame.update_list(newgame.user_guess)
+    newgame.append_list
+    if newgame.correct_guess?
+        p "You win the game with using #{i} tries!"
+        win = true
+        break
+    else
+        red = "Red Pegs:" + newgame.how_many_red_pegs.to_s
+        white = "White Pegs:" + newgame.how_many_white_pegs.to_s
+        p red
+        p white
+    end
+end
+win ? (p "") : (p "Game over! You lost!")
+
+
+newgame.set_list_to_default
+p newgame.list
+
+
+# newgame.append_list
+# newgame.append_list
+# newgame.print_total_list
+newgame.how_many_red_pegs
+newgame.list_sorted
+newgame.secret_sorted
+newgame.how_many_white_pegs

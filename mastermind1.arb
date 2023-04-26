@@ -26,8 +26,8 @@ class Game
 
     def update_list(guess_splited)
         @list = [guess_splited[0].strip, guess_splited[1].strip, guess_splited[2].strip, guess_splited[3].strip]
-        p "update_list"
-        p list
+        # p "update_list"
+        # p list
     end
 
     def append_list
@@ -48,8 +48,8 @@ class Game
         third = rand(6)
         fourth = rand(6)
         @secret = [colors[first], colors[second], colors[third], colors[fourth]]
-        p "secret code:"
-        p @secret
+        # p "secret code:"
+        # p @secret
     end
 
     def correct_guess?
@@ -67,7 +67,7 @@ class Game
                 counter += 1
             end
         end
-        p counter
+        # p counter
         return counter
     end
 
@@ -79,8 +79,8 @@ class Game
             result[color] += 1
             result
         end
-        p "list_sorted"
-        p list_sorted
+        # p "list_sorted"
+        # p list_sorted
     end
 
     def secret_sorted
@@ -88,8 +88,8 @@ class Game
             result[color] += 1
             result
         end
-        p "secret_sorted"
-        p secret_sorted
+        # p "secret_sorted"
+        # p secret_sorted
     end
         
     def how_many_white_pegs
@@ -112,8 +112,8 @@ class Game
         # p "overlap"
         # p overlap
         white_pegs = overlap - self.how_many_red_pegs
-        p "white pegs = overlap - red pegs"
-        p white_pegs
+        # p "white pegs = overlap - red pegs"
+        # p white_pegs
         return white_pegs
     end
 end
@@ -122,7 +122,7 @@ puts "-----MASTERMIND THE GAME-----"
 win = false
 newgame = Game.new("newgame")
 newgame.decide_secret
-p newgame.secret_sorted
+# p newgame.secret_sorted
 (1..12).each do |i|
     p newgame.total_list
     puts "Guess #{i}"
@@ -139,17 +139,17 @@ p newgame.secret_sorted
         p white
     end
 end
-win ? (p "") : (p "Game over! You lost!")
+win ? (p "") : (p "Game over! You lost! The secret code was #{newgame.secret}")
 
 
-newgame.set_list_to_default
-p newgame.list
+# newgame.set_list_to_default
+# p newgame.list
 
 
 # newgame.append_list
 # newgame.append_list
 # newgame.print_total_list
-newgame.how_many_red_pegs
-newgame.list_sorted
-newgame.secret_sorted
-newgame.how_many_white_pegs
+# newgame.how_many_red_pegs
+# newgame.list_sorted
+# newgame.secret_sorted
+# newgame.how_many_white_pegs
